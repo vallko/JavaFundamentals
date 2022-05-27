@@ -1,0 +1,87 @@
+package finalExamForReal;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class thirdProblem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Map<String, User> users = new LinkedHashMap();
+        String input = scanner.nextLine();
+        int likes = 0;
+        int comments = 0;
+        while (!input.equals("Log out")) {
+            String[] command = input.split(": ");
+            String name = command[1];
+            User user = new User(likes, comments);
+
+            switch (command[0]) {
+                case "New follower":
+                    users.putIfAbsent(name, user);
+                    break;
+                case "Like":
+                    if (users.containsKey(name)) {
+                        int totalLikes = users.get(name).getLikesCount();
+                        int newLikes = Integer.parseInt(command[2]);
+                        users.get(name).setLikesCount(totalLikes + newLikes);
+                    } else {
+                        users.putIfAbsent(name, user);             //check this if problem with likes count
+                        user.setLikesCount(Integer.parseInt(command[2]));
+                    }
+                    break;
+                case "Comment":
+                    if (users.containsKey(name)) {
+                        int totalComments = users.get(name).getCommentsCount();
+                        int newComment = 1;
+                        users.get(name).setCommentsCount(totalComments + newComment);
+                    } else {
+                        users.putIfAbsent(name, user);             //check this if problem with likes count
+                        user.setCommentsCount(1);
+                    }
+                    break;
+                case "Blocked":
+                    if (users.containsKey(name)) {
+                        users.remove(name);
+                    } else {
+                        System.out.println(name + " doesn't exist.");
+                    }
+                    break;
+            }
+            input = scanner.nextLine();
+        }
+        System.out.printf("%d followers %n", users.size());
+        users.forEach((k, v) -> {
+            System.out.printf("%s: ", k);
+            System.out.printf("%d\n", users.get(k).getCommentsCount() + users.get(k).getLikesCount());
+        });
+    }
+
+    public static class User {
+        public User(int likesCount, int commentsCount) {
+            this.likesCount = likesCount;
+            this.commentsCount = commentsCount;
+        }
+
+        public int getLikesCount() {
+            return likesCount;
+        }
+
+        public void setLikesCount(int likesCount) {
+            this.likesCount = likesCount;
+        }
+
+        public int getCommentsCount() {
+            return commentsCount;
+        }
+
+        public void setCommentsCount(int commentsCount) {
+            this.commentsCount = commentsCount;
+        }
+
+        int likesCount;
+        int commentsCount;
+
+
+    }
+}
